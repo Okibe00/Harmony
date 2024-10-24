@@ -16,7 +16,7 @@ export const getProductCode = ({ manufacturerId,  brandName, dosageForm, drugCla
     }
   const manufacturerCode = padCode(manufacturerId, 3, '0');
   const dosageFormCode = padCode(dosageForm, 2, '0');
-  const productCode = `${brandName.slice(0, 3)}-${manufacturerCode}-${dosageFormCode}-${drugClass}`;
+  const productCode = `${brandName.slice(0, 3)}-${manufacturerCode}-${dosageFormCode}-${drugClass.slice(0, 5)}`;
   /**
    * split the code by '-'
    *  There should be 4 strings of XXX, XXX | more, XXX | more
@@ -35,10 +35,14 @@ export const getProductCode = ({ manufacturerId,  brandName, dosageForm, drugCla
  */
 const padCode = (val, padSize=3, padString='0') => {
   const valString = val.toString();
-  if (valString.length < 3) {
+  const strLen = valString.length;
+  if (strLen < 3) {
     return (valString.padStart(padSize, padString));
+  } else if (strLen === 3) {
+    return valString;
+  } else {
+    return valString.slice(0, 3);
   }
-  return val;
 }
 
 /**
@@ -48,7 +52,6 @@ const padCode = (val, padSize=3, padString='0') => {
  */
 const validateCode = (productCode) => {
   const [brandName, manufacturerCode, dosageFormCode, drugClass] = productCode.split('-');
-  console.log(brandName, manufacturerCode, dosageFormCode, drugClass)
   return (
     brandName.length === 3
      && manufacturerCode.length >= 3
