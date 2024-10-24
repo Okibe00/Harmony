@@ -10,7 +10,7 @@ export const TABLES = {
     `
      CREATE TABLE IF NOT EXISTS manufacturers (
       manufacturer_id INT PRIMARY KEY AUTO_INCREMENT,
-      manufacturer_name VARCHAR(255),
+      manufacturer_name VARCHAR(255) UNIQUE,
       country VARCHAR(100),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -22,6 +22,7 @@ brand: (
   `
    CREATE TABLE IF NOT EXISTS brands (
     brand_id INT PRIMARY KEY AUTO_INCREMENT,
+    generic_name TEXT,
     brand_name VARCHAR(255) NOT NULL,
     manufacturer_id INT,
     category ENUM('POM', 'OTC') NOT NULL,
