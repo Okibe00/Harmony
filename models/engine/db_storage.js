@@ -71,7 +71,14 @@ class dbStorage {
       throw error;
     }
   }
+  /**
+   *
+   * @param {@param} obj
+   */
   async save(obj) {
+    /**
+     * consider a way to save subquery to retrieve the id
+     */
     const placeholderCount = Object.keys(obj).length;
     const table = obj.constructor.name.toLowerCase();
     const valuePlaceholder = '?'.repeat(placeholderCount).split('').toString();
@@ -79,7 +86,6 @@ class dbStorage {
     const values = Object.values(obj);
     const sqlQuery = `INSERT INTO ${table} (${columns}) VALUES (${valuePlaceholder})`;
     await this.#conn.execute(sqlQuery, [...values]);
-    // console.log(this.#conn.sql);
   }
 } //end of dbStorage clas
 

@@ -34,5 +34,6 @@ export const DRUGCLASS = {
   'ophthalmic_agents': 33,
   'dermatological_agents': 34,
   'vaccines': 35,
-  'antacid': 36
+  'antacid': 36,
+  'proton_pump_inhibitor': 37
 };

@@ -4,6 +4,7 @@
  */
 
 export default class BaseModel {
+
   /**
    *
    * @param {*} obj - object containing instance attributes.
