@@ -3,7 +3,7 @@
  * @class
  */
 import mysql from 'mysql2/promise';
-import { TABLES, DATABASE } from '../../utils/db_setup';
+import { TABLES, DATABASE } from '../../utils/db_setup.js';
 import 'dotenv/config';
 
 class dbStorage {

@@ -3,20 +3,20 @@
  * test empty param
  */
 import { getProductCode } from './product_code';
-import { MANUFACTURER, FORMULATIONS } from './dosage_form';
-import { DRUGCLASS } from './drugclass';
+import { MANUFACTURER } from './dosage_form';
 
 describe('getProductCode test suite', () => {
   test('test with all param given', () => {
     const gascol = {
       brandName: 'gascol',
-      drugClass: DRUGCLASS['antacid'],
+      drugClass: 'antacid',
       manufacturerId: MANUFACTURER['Fidson'],
-      dosageForm: FORMULATIONS['suspension'],
+      dosageForm: 'suspension',
     }
     const result = getProductCode(gascol);
+    console.log(result);
 
-    expect(result).toBe('gas-001-13-36');
+    expect(result).toBe('gas-001-sus-antac');
   })
 
   test('test incomplete parameters', () => {
@@ -25,5 +25,44 @@ describe('getProductCode test suite', () => {
     expect(getProductCode('', '', '', '', '')).toBe('0')
     expect(getProductCode('', 'FF', 'FFFF', 'SFS', 'DSDSD')).toBe('0')
 
+  })
+
+  test('get codes from db', () => {
+    const drugs = [
+      {
+        brandName: "Coartem 80/480",
+        drugClass: "Antimalaria",
+        manufacturerId: 5,
+        dosageForm: "tablet"
+      },
+      {
+        brandName: "Meprasil-20",
+        drugClass: "PPI",
+        manufacturerId: 1,
+        dosageForm: "tablet"
+      },
+      {
+        brandName: "Emcap Paractemol",
+        drugClass: "Antimalaria",
+        manufacturerId: 4,
+        dosageForm: "tablet"
+      },
+      {
+        brandName: "Amatem Softgel",
+        drugClass: "Antimalaria",
+        manufacturerId: 6,
+        dosageForm: "tablet"
+      },
+      {
+        brandName: "Zinnat 500mg",
+        drugClass: "Antibiotic",
+        manufacturerId: 2,
+        dosageForm: "tablet"
+      }
+    ];
+
+ drugs.forEach((obj) => {
+  console.log(getProductCode(obj));
+ })
   })
 })
