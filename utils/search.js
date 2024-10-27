@@ -1,4 +1,4 @@
-import storage from "../models/engine/db_storage";
+import storage from "../models/engine/db_storage.js";
 
 /**
  * search for drug records base

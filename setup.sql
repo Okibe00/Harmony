@@ -75,7 +75,12 @@ INSERT INTO brands (
     dosage_form,
     active_ingredients,
     market_status
-) VALUES ('Artemeter+Lumefrantrine', 'Coartem 80/480', (SELECT manufacturer_id From manufacturers WHERE manufacturer_name='Norvartis'), 'B4-0262', '1x6', 'Antimalaria', 'POM', 'tablet' ,'Artemeter80mg/lumefrantrine480mg', 'active'), ('Omeprazole', 'Meprasil-20', (SELECT manufacturer_id From manufacturers WHERE manufacturer_name='Fidson'), 'O4-5478', '2x10', 'PPI', 'POM', 'tablet' ,'Omeprazole 20mg', 'active'), ('Paracetamol', 'Emcap Paracetamol', (SELECT manufacturer_id From manufacturers WHERE manufacturer_name='Emzor'), 'O4-5478', '2x10', 'Analgesic', 'OTC', 'tablet' ,'Paracetamol 500mg', 'active'), ('Artemeter+Lumefrantrine', 'Amatem Softgel', (SELECT manufacturer_id From manufacturers WHERE manufacturer_name='Elbe'), 'A4-3489', '1x6', 'Antimalaria', 'POM', 'tablet' ,'Artemeter+Lumefrantine', 'active'), ('Cefuroxime', 'Zinnat 500mg', (SELECT manufacturer_id From manufacturers WHERE manufacturer_name='GSk'), '04-0433', '1x10', 'Antibiotic', 'POM', 'tablet' ,'Cefuroxime 500mg', 'active');
+) VALUES
+    ('Artemeter+Lumefrantrine', 'Coartem 80/480',(SELECT manufacturer_id From manufacturers WHERE manufacturer_name='Norvartis'), 'B4-0262', '1x6', 'Antimalaria', 'POM', 'tablet' ,'Artemeter80mg/lumefrantrine480mg', 'active'),
+    ('Omeprazole', 'Meprasil-20', (SELECT manufacturer_id From manufacturers WHERE manufacturer_name='Fidson'), 'O4-5478', '2x10', 'PPI', 'POM', 'tablet' ,'Omeprazole 20mg', 'active'),
+    ('Paracetamol', 'Emcap Paracetamol', (SELECT manufacturer_id From manufacturers WHERE manufacturer_name='Emzor'), 'O4-5478', '2x10', 'Analgesic', 'OTC', 'tablet' ,'Paracetamol 500mg', 'active'),
+    ('Artemeter+Lumefrantrine', 'Amatem Softgel', (SELECT manufacturer_id From manufacturers WHERE manufacturer_name='Elbe'), 'A4-3489', '1x6', 'Antimalaria', 'POM', 'tablet' ,'Artemeter+Lumefrantine', 'active'),
+    ('Cefuroxime', 'Zinnat 500mg', (SELECT manufacturer_id From manufacturers WHERE manufacturer_name='GSk'), '04-0433', '1x10', 'Antibiotic', 'POM', 'tablet' ,'Cefuroxime 500mg', 'active');
 
 -- insert drug codes
 INSERT INTO drug_codes (
