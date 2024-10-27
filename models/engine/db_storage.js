@@ -85,7 +85,7 @@ class dbStorage {
     const columns = Object.keys(obj).join();
     const values = Object.values(obj);
     const sqlQuery = `INSERT INTO ${table} (${columns}) VALUES (${valuePlaceholder})`;
-    await this.#conn.execute(sqlQuery, [...values]);
+    return await this.execute(sqlQuery, [...values]);
   }
 } //end of dbStorage clas
 

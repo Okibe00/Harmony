@@ -33,7 +33,7 @@ export const getProductCode = ({ manufacturerId,  brandName, dosageForm, drugCla
  * @param padSize{number}
  * @param padString{string}
  */
-const padCode = (val, padSize=3, padString='0') => {
+let padCode = (val, padSize=3, padString='0') => {
   const valString = val.toString();
   const strLen = valString.length;
   if (strLen < 3) {
@@ -50,7 +50,7 @@ const padCode = (val, padSize=3, padString='0') => {
  * @param {String} productCode
  * @returns true | false
  */
-const validateCode = (productCode) => {
+let validateCode = (productCode) => {
   const [brandName, manufacturerCode, dosageFormCode, drugClass] = productCode.split('-');
   return (
     brandName.length === 3

@@ -2,7 +2,7 @@
  * @class brand class
  */
 
-import BaseModel from './base_model';
+import BaseModel from './base_model.js';
 
 export default class Brands extends BaseModel {
   /**

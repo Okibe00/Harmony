@@ -1,4 +1,4 @@
-import { getProductCode } from '../utils/product_code';
+import { getProductCode } from '../utils/product_code.js';
 /**
  * @class - drug codes class
  */

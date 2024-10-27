@@ -8,7 +8,7 @@
       manufacturer_name VARCHAR(255),
       country VARCHAR(100),
  */
-import BaseModel from "./base_model";
+import BaseModel from "./base_model.js";
 
 export default class Manufacturers extends BaseModel {
   /**
