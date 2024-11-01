@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS drug_codes (
 
 CREATE TABLE IF NOT EXISTS admin_user (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(255) NOT NULL UNIQUE,
+    user_name VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     role ENUM('read', 'write', 'admin') NOT NULL,
