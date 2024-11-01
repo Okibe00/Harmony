@@ -16,7 +16,7 @@ import deleteManufacturer from '../utils/delete_manufacturer.js';
 import deleteProduct from '../utils/delete_record.js';
 import addManufacturer from '../utils/add_manufacturer.js';
 import { validateDrugDetails } from '../utils/validateDrugDetails.js';
-
+import cors from 'cors';
 /**
  * @function setup
  * @description Initializes the database by calling the setup_db function from the storage model.
@@ -27,6 +27,9 @@ const setup = async () => {
 setup();
 
 const app = express();
+
+//allow cross origin resource sharing
+app.use(cors());
 
 app.use(express.json());
 /**
