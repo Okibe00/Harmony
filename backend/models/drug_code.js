@@ -1,7 +1,9 @@
 import { getProductCode } from '../utils/product_code.js';
+import { v4 as uuidv4 } from 'uuid';
+
 /**
  * @class - drug codes class
- */
+  */
 
 
 export default class Drug_Codes {
@@ -21,6 +23,7 @@ export default class Drug_Codes {
       dosageForm: dosage_form,
       brandId: brand_id
     }
+    this.code_id = uuidv4();
     this.product_code = getProductCode(brand);
     this.brand_id = brand_id;
     this.manufacturer_id = manufacturer_id;

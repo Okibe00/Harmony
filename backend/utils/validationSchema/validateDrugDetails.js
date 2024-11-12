@@ -1,4 +1,4 @@
-export const validateDrugDetails = {
+const validateDrugDetails = {
   query: {
     exists: {
       errorMessage: 'query is required'
@@ -8,3 +8,5 @@ export const validateDrugDetails = {
     },
   }
 }
+
+export default validateDrugDetails;

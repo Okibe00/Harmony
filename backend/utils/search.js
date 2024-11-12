@@ -4,7 +4,7 @@ import storage from "../models/engine/db_storage.js";
  * search for drug records base
  * @param {string} searchTerm - search_string
  * @param {string} filter - filter criteria
- * @return {Object | null} result - object containing result
+ * @return {object} row - object containing result | 1
  *
  *
  */
@@ -44,9 +44,12 @@ const getDrug = async (searchTerm = '', { dosageForm=null, category=null, market
            marketStatus
          ]
         );
-      return row;
+        if (row.length)
+        {
+          return row;
+        }
   } else {
-    return 'Please provide search entry';
+    return 1;
   }
 }
 export default getDrug;

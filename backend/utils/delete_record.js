@@ -1,6 +1,7 @@
 /**
  * deletes a record from the database
  * @param{string} product_code - unique identifier
+ * @return {number} - status(0 success | 1 error)
  */
 
 import storage from "../models/engine/db_storage.js"

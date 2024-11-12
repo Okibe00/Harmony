@@ -3,8 +3,11 @@
  * @class
  */
 import mysql from 'mysql2/promise';
-import { TABLES, DATABASE } from '../../utils/db_setup.js';
 import 'dotenv/config';
+import { DATABASE, DATABASE_TABLES } from '../../utils/db_schema/db_schema.js';
+import addBrand from '../../utils/add_brand.js';
+import addManufacturer from '../../utils/add_manufacturer.js';
+import MySQLStore from 'express-mysql-session';
 
 class dbStorage {
   /**
@@ -15,15 +18,20 @@ class dbStorage {
    * @param  {string} database - destination database
    */
   #conn = null;
-
+  sessionStore = null;
   constructor() {
+    if (dbStorage.instance) {
+      return dbStorage.instance;
+    }
     const { HOST, PASSWORD} = process.env;
     const config = {
       host: HOST,
       password: PASSWORD,
-      user: 'simon'
+      user: 'simon',
+      database: 'harmony'
     };
       this.#conn = mysql.createPool({connectionLimit: 50, ...config});
+      this.sessionStore = this.#conn;
       dbStorage.instance = this;
   }
   /**
@@ -32,18 +40,40 @@ class dbStorage {
    */
    async setup_db() {
     //create  the database;
-    await this.#conn.query('CREATE DATABASE IF NOT EXISTS ' + DATABASE);
-    await this.#conn.query(`USE ${DATABASE}`);
+    try {
+      await this.#conn.query('CREATE DATABASE IF NOT EXISTS ' + DATABASE);
+      await this.#conn.query(`USE ${DATABASE}`);
 
-    for (const table in TABLES) {
-      await this.#conn.query(TABLES[table]);
+      for (const table in DATABASE_TABLES) {
+        await this.#conn.query(DATABASE_TABLES[table]);
+      }
+    } catch(error) {
+      console.error(error);
     }
   }
 
   /**
    * create a new manufacturer
-   */
-  async
+   * @param {object} - brand| user | manufacturer| DrugCode
+   * @return {number} 0 success | 1 failed
+  */
+  async add(obj) {
+    try {
+      if (obj.constructor.name === 'Brands') {
+        await addBrand(obj);
+      } else if (obj.constructor.name === 'Manufacturers') {
+        await addManufacturer(obj);
+      } else if (obj.constructor.name === 'admin_user') {
+        await this.save(obj);
+      } else if (obj.constructor.name === 'Drug_Code') {
+        await this.save(obj);
+      }
+      return 0;
+    } catch(error) {
+      console.error(error)
+      return 1;
+    }
+  }
 
   /**
    * execute a query string

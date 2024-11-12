@@ -9,6 +9,7 @@
       country VARCHAR(100),
  */
 import BaseModel from "./base_model.js";
+import { v4 as uuidv4 } from 'uuid';
 
 export default class Manufacturers extends BaseModel {
   /**
@@ -17,6 +18,7 @@ export default class Manufacturers extends BaseModel {
    */
   constructor(obj) {
     super(obj);
+    this.manufacturer_id = uuidv4();
   }
 
 }
