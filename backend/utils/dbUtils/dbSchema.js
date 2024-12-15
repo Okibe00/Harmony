@@ -2,7 +2,7 @@
  * @description - contains database schema
  */
 // create  database;
-export const DATABASE_TABLES = {
+export const TABLES = {
   manufacturers: `CREATE TABLE IF NOT EXISTS manufacturers (
     manufacturer_id VARCHAR(255) PRIMARY KEY,
     manufacturer_name VARCHAR(255) UNIQUE,
