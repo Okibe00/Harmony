@@ -31,7 +31,7 @@ export const DATABASE_TABLES = {
       ON UPDATE CASCADE,
     INDEX idx_brand_name (brand_name)
 ) ENGINE=InnoDB;`,
-  drug_codes: `CREATE TABLE IF NOT EXISTS drug_codes (
+  codes: `CREATE TABLE IF NOT EXISTS codes (
      code_id VARCHAR(255) PRIMARY KEY,
      brand_id VARCHAR(255),
      manufacturer_id VARCHAR(255),
