@@ -4,7 +4,7 @@
 
 import BaseModel from './baseModel';
 
-export default class Manufacturer extends BaseModel {
+export default class Manufacturers extends BaseModel {
   constructor(man) {
     super(man);
   }

@@ -6,7 +6,7 @@ import BaseModel from './baseModel';
 /**
  * Represents a user in the app
  */
-export default class User extends BaseModel {
+export default class Users extends BaseModel {
   /**
    * 
    * @param {Object} user {username, password, email}  
