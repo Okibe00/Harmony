@@ -5,7 +5,10 @@ import pluginJs from '@eslint/js';
 export default [
   {
     languageOptions: {
-      globals: { ...globals.browser, ...globals.jest },
+      globals: { ...globals.browser, ...globals.jest, ...globals.node },
+    },
+    rules: {
+      'no-unused-vars': 'warn',
     },
   },
   pluginJs.configs.recommended,
