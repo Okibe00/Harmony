@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
  * @class - drug codes class
  */
 
-export default class DrugCodes {
+export default class Codes {
   /**
    *
    * @param {string} brandName
