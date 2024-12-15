@@ -18,6 +18,13 @@
   "type": "module",
   "dependencies": {
     "babel-jest": "^29.7.0",
+    "dotenv": "^16.4.7",
+    "mysql2": "^3.11.5",
     "uuid": "^11.0.3"
+  },
+  "eslintConfig": {
+    "rules": {
+      "no-unused-vars": "warn"
+    }
   }
 }
