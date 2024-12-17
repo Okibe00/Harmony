@@ -4,11 +4,11 @@
  */
 import mysql from 'mysql2/promise';
 import 'dotenv/config';
-import { DATABASE, DATABASE_TABLES } from '../../utils/db_schema/db_schema.js';
-import addBrand from '../../utils/add_brand.js';
-import addManufacturer from '../../utils/add_manufacturer.js';
-import MySQLStore from 'express-mysql-session';
-
+// import { DATABASE, DATABASE_TABLES } from '../../utils/db_schema/db_schema.js';
+// import addBrand from '../../utils/add_brand.js';
+// import addManufacturer from '../../utils/add_manufacturer.js';
+// import MySQLStore from 'express-mysql-session';
+import { TABLES } from '../../utils/dbUtils/dbSchema';
 class dbStorage {
   /**
    * @constructor
@@ -22,24 +22,22 @@ class dbStorage {
     if (dbStorage.instance) {
       return dbStorage.instance;
     }
-    const { HOST, PASSWORD, USER, DB } = process.env;
+    const { HOST, PASSWORD, DB_USER, DB } = process.env;
     const config = {
       host: HOST,
       password: PASSWORD,
-      user: USER,
+      user: DB_USER,
       database: DB,
     };
+    // console.log(config);
     this.#conn = mysql.createPool({ connectionLimit: 50, ...config });
     dbStorage.instance = this;
   }
-  
+
   async setup_db() {
     try {
-      await this.#conn.query('CREATE DATABASE IF NOT EXISTS ' + DATABASE);
-      await this.#conn.query(`USE ${DATABASE}`);
-
-      for (const table in DATABASE_TABLES) {
-        await this.#conn.query(DATABASE_TABLES[table]);
+      for (const table in TABLES) {
+        await this.#conn.query(TABLES[table]);
       }
     } catch (error) {
       console.error(error);
@@ -61,6 +59,24 @@ class dbStorage {
     }
   }
 
+  async get(id = '', obj = '') {
+    if (id && obj) {
+      const query = `SELECT * FROM ${obj} WHERE id=?`;
+      const [[row]] = await this.execute(query, [id]);
+      return row;
+    } else {
+      console.log('Invalid id or table');
+    }
+  }
+
+  async delete(id, obj) {
+    if ((id, obj)) {
+      const query = `DELETE FROM ${obj} WHERE id=?`;
+      const [[row]] = await this.storage(query, [id]);
+      return row;
+    }
+    return 1;
+  }
   /**
    * close the pool connection
    */
@@ -77,9 +93,6 @@ class dbStorage {
    * @param {@param} obj
    */
   async save(obj) {
-    /**
-     * consider a way to save subquery to retrieve the id
-     */
     const placeholderCount = Object.keys(obj).length;
     const table = obj.constructor.name.toLowerCase();
     const valuePlaceholder = '?'.repeat(placeholderCount).split('').toString();
