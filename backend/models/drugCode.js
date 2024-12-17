@@ -15,26 +15,26 @@ export default class Codes {
    * @param {*} brandId
    */
   constructor({
-    brandName,
-    manufacturerId,
-    drugClass,
-    dosageForm,
-    brandId,
+    brand_name,
+    manufacturer_id,
+    drug_class,
+    dosage_form,
+    brand_id,
   }) {
     const brand = {
-      brandName,
-      manufacturerId,
-      drugClass,
-      dosageForm,
-      brandId,
+      brandName: brand_name,
+      manufacturerId: manufacturer_id,
+      drugClass: drug_class,
+      dosageForm: dosage_form,
+      brandId: brand_id
     };
-    this.codeId = uuidv4();
-    this.productCode = getProductCode(brand);
-    this.brandId = brandId;
-    this.manufacturerId = manufacturerId;
+    this.id = uuidv4();
+    this.product_code = getProductCode(brand);
+    this.brand_id = brand_id;
+    this.manufacturer_id = manufacturer_id;
   }
 
   get brandCode() {
-    return this.productCode;
+    return this.product_code;
   }
 }
