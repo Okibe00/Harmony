@@ -5,6 +5,9 @@
  * Return {string}: productCode || '0'
  */
 
+import Manufacturers from '../models/manufacturer';
+import storage from '../models/engine/db';
+
 export const getProductCode = ({
   manufacturerId,
   brandName,
@@ -63,3 +66,35 @@ let validateCode = (productCode) => {
     drugClass
   );
 };
+
+//provision database with some data
+export async function provisionDb() {
+  const man0 = {
+    name: 'Fidson PLC',
+    country: 'Nigeria',
+  };
+  const man1 = {
+    name: 'Emzor Pharmaceuticals',
+    country: 'Nigeria',
+  };
+  const man2 = {
+    name: 'Chi Pharma Ltd',
+    country: 'Nigeria',
+  };
+  const man3 = {
+    name: 'Elbe',
+    country: 'Nigeria',
+  };
+  const man4 = {
+    name: 'DrugField',
+    country: 'Nigeria',
+  };
+  const companyList = [man0, man1, man2, man3, man4];
+
+  const companyObjs = companyList.map((man) => {
+    return new Manufacturers(man);
+  });
+  for (let i = 0; i < companyObjs.length; i++) {
+    await storage.save(companyObjs[i]);
+  }
+}
