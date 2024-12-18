@@ -82,5 +82,3 @@ Flexible query endpoints for searching.
 - Use query parameters for **searching** and **filtering** (e.g., `/api/brands/search?name=aspirin`).
 - Include proper **status codes** and error handling (e.g., `404` for not found, `400` for bad requests, `500` for server errors).
 - **Pagination** can be added for large datasets using query params (e.g., `/api/brands?page=2&limit=20`).
-
-Would you like me to expand on any specific endpoint or provide code examples?
