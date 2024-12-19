@@ -5,8 +5,9 @@
  * Return {string}: productCode || '0'
  */
 
-import Manufacturers from '../models/manufacturer';
-import storage from '../models/engine/db';
+import Manufacturers from '../models/manufacturer.js';
+import { storage } from '../models/engine/db.js';
+import Brands from '../models/brand.js';
 
 export const getProductCode = ({
   manufacturerId,
@@ -96,5 +97,73 @@ export async function provisionDb() {
   });
   for (let i = 0; i < companyObjs.length; i++) {
     await storage.save(companyObjs[i]);
+  }
+}
+//add some testing brands 
+export async function addBrands() {
+  const amatem = {
+    brand_name: 'Amatem Soft Gel 80/480mg',
+    manufacturer_id: '7c458dbc-6272-4fe7-b03f-eae4086bb8ef',
+    generic_name: 'Artemeter+lumefrantrine',
+    nafdac_no: '546236',
+    pack_size: '1x10',
+    drug_class: 'Antimalaria',
+    category: 'POM',
+    dosage_form: 'Tablet',
+    active_ingredients: 'Artemeter 80mg + Lumefrantine 480mg',
+    market_status: 'active',
+  };
+  const Eparacetamol = {
+    brand_name: 'Emzor Paracetamol',
+    manufacturer_id: '5c85a761-7977-4889-a6e1-27323dee021c',
+    generic_name: 'Paracetamol',
+    nafdac_no: 'B4-8578',
+    pack_size: '1x10',
+    drug_class: 'Antipyretic',
+    category: 'OTC',
+    dosage_form: 'Tablet',
+    active_ingredients: 'Paracetamol 500mg',
+    market_status: 'active',
+  };
+  const acyclovir = {
+    brand_name: 'Acyclovir Cream',
+    manufacturer_id: '2d07528f-67fe-404f-8400-5129a49c61fb',
+    generic_name: 'Acyclovir',
+    nafdac_no: 'B4-828',
+    pack_size: '1x1',
+    drug_class: 'Antiviral',
+    category: 'POM',
+    dosage_form: 'Cream',
+    active_ingredients: 'Acyclovir 15%w/w',
+    market_status: 'active',
+  };
+  const meprasil = {
+    brand_name: 'Meprasil-20',
+    manufacturer_id: '1360f8d5-d5c0-4056-a833-9772eb61ee38',
+    generic_name: 'Omeprazole',
+    nafdac_no: 'B4-7512',
+    pack_size: '2x10',
+    drug_class: 'PPI',
+    category: 'POM/OTC',
+    dosage_form: 'Tablet',
+    active_ingredients: 'Omeprazole 20mg',
+    market_status: 'active',
+  };
+  const chiflox = {
+    brand_name: 'ChiFlox 500',
+    manufacturer_id: '0ad7c637-3577-4d8d-ae1d-50946255ae66',
+    generic_name: 'Ciprofloxacin 500mg',
+    nafdac_no: 'B4-7822',
+    pack_size: '1x10',
+    drug_class: 'Antibiotic',
+    category: 'POM/OTC',
+    dosage_form: 'Tablet',
+    active_ingredients: 'Ciprofloxacin 500mg',
+    market_status: 'active',
+  };
+  const brandList = [amatem, acyclovir, Eparacetamol, meprasil, chiflox];
+  const brandObj = brandList.map((brand) => new Brands(brand));
+  for (let i = 0; i < brandObj.length; i++) {
+    await storage.save(brandObj[i]);
   }
 }
