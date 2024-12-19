@@ -8,7 +8,7 @@ import 'dotenv/config';
 // import addBrand from '../../utils/add_brand.js';
 // import addManufacturer from '../../utils/add_manufacturer.js';
 // import MySQLStore from 'express-mysql-session';
-import { TABLES } from '../../utils/dbUtils/dbSchema';
+import { TABLES } from '../../utils/dbUtils/dbSchema.js';
 class dbStorage {
   /**
    * @constructor
@@ -72,7 +72,7 @@ class dbStorage {
   async delete(id, obj) {
     if ((id, obj)) {
       const query = `DELETE FROM ${obj} WHERE id=?`;
-      const [[row]] = await this.storage(query, [id]);
+      const [row] = await this.execute(query, [id]);
       return row;
     }
     return 1;
@@ -103,5 +103,5 @@ class dbStorage {
   }
 } //end of dbStorage class
 
-const storage = new dbStorage();
-export default storage;
+export const storage = new dbStorage();
+// export  storage;
