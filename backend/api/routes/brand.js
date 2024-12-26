@@ -5,6 +5,7 @@
 import { Router } from 'express';
 import { storage } from '../../models/engine/db.js';
 import {
+  body,
   checkSchema,
   matchedData,
   param,
@@ -12,6 +13,7 @@ import {
 } from 'express-validator';
 import { validateBrandDetails } from '../../utils/validation.js';
 import Brands from '../../models/brand.js';
+import Codes from '../../models/drugCode.js';
 
 const router = Router();
 
@@ -55,9 +57,12 @@ router.post(
     const data = matchedData(request);
     try {
       const brand = new Brands(data);
+      //when should a product code be created? as soon as a brand is created?
+      const productCode = new Codes(brand);
       await storage.save(brand);
+      await storage.save(productCode);
       return response.status(200).json({ status: 'Ok' });
-    } catch (error) {
+     } catch (error) {
       return response.status(500).json({ error: error.message });
     }
   }
@@ -86,5 +91,45 @@ router.delete(
     return response.status(200).json({ status: 'Ok' });
   }
 );
-
+//Search brands by name or manufacturer
+router.post(
+  '/brands/search/',
+  body('keyword')
+    .exists()
+    .trim()
+    .withMessage('Missing search keyword')
+    .escape(),
+  async (request, response) => {
+    //validation
+    const err = validationResult(request);
+    if (!err.isEmpty()) {
+      return response.status(400).json({ error: err.array() });
+    }
+    //extracting keyword
+    const { keyword } = matchedData(request);
+    const query = `
+    SELECT
+      b.brand_name,
+      b.generic_name,
+      b.nafdac_no,
+      b.pack_size,
+      b.drug_class,
+      b.category,
+      b.dosage_form,
+      b.active_ingredients,
+      b.market_status,
+      m.name AS manufacturer_name FROM brands b JOIN manufacturers m ON b.manufacturer_id=m.id
+      WHERE LOWER(b.brand_name) LIKE LOWER(?) OR LOWER(m.name) LIKE LOWER(?)
+      `;
+    try {
+      const [row] = await storage.execute(query, [
+        `%${keyword}%`,
+        `%${keyword}%`,
+      ]);
+      return response.status(200).json(row);
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
+    }
+  }
+);
 export default router;
