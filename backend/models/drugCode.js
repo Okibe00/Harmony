@@ -1,4 +1,4 @@
-import { getProductCode } from '../utils/helper';
+import { getProductCode } from '../utils/helper.js';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
@@ -19,18 +19,18 @@ export default class Codes {
     manufacturer_id,
     drug_class,
     dosage_form,
-    brand_id,
+    id,
   }) {
     const brand = {
       brandName: brand_name,
       manufacturerId: manufacturer_id,
       drugClass: drug_class,
       dosageForm: dosage_form,
-      brandId: brand_id
+      brandId: id
     };
     this.id = uuidv4();
     this.product_code = getProductCode(brand);
-    this.brand_id = brand_id;
+    this.brand_id = id;
     this.manufacturer_id = manufacturer_id;
   }
 
