@@ -78,10 +78,49 @@ router.delete(
     } catch (err) {
       return response.status(500).json({
         error: err.message,
-        r: rs
-      })
+        r: rs,
+      });
     }
-    return response.status(200).json({id, rs});
+    return response.status(200).json({ id, rs });
   }
 );
+
+//Get all brands for a specific manufacturer
+router.get(
+  `/manufacturers/:id/brands/`,
+  param('id').exists().withMessage('Missing manufacturer ID').escape(),
+  async (request, response) => {
+    const err = validationResult(request);
+    if (!err.isEmpty()) {
+      console.error(err.array());
+      return response.status(400).json({ status: 'Failure' });
+    }
+    const { id } = matchedData(request);
+    console.log(id);
+    const query = `
+    SELECT
+      b.brand_name,
+      b.generic_name,
+      b.nafdac_no,
+      b.pack_size,
+      b.drug_class,
+      b.category,
+      b.dosage_form,
+      b.active_ingredients,
+      b.market_status
+      FROM brands b JOIN manufacturers m ON b.manufacturer_id=m.id
+      WHERE m.id=?
+      `;
+    try {
+      const [row] = await storage.execute(query, [id]);
+      return response.status(200).json(row);
+    } catch (error) {
+      console.error(error);
+      return response.status(500).json({ status: 'Failure' });
+    }
+  }
+);
+
+//Get all product codes by a specific manufacturer why would you want to do this?
+// router.get(`manufacturers/:id/codes`, async (request, response) => {});
 export default router;
