@@ -25,6 +25,17 @@ const handleSubmit = (event, state, endpoint) => {
   event.preventDefault();
   console.log(state);
   //makes the api call with state values
+  try {
+    //make the api call
+    fetch('url', {
+      method: '',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+  } catch (error) {
+    console.log('failed to fetch')
+  }
 }
 
 export const DeleteBrandForm = memo(function DeleteBrandForm() {
@@ -38,6 +49,7 @@ export const DeleteBrandForm = memo(function DeleteBrandForm() {
       <label className='block'>
         Product Code
         <input
+          name='product_code'
           placeholder='Enter product code'
           type="text"
           onChange={(e) => handleChange(e)}
