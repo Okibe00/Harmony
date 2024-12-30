@@ -11,11 +11,14 @@ export default function Result({ data }) {
   return (
     <table>
       <thead>
+        <tr>
         <th>Product Code</th>
         <th>Brand Name</th>
         <th>Generic Name</th>
         <th>Dosage Form</th>
         <th>Manufacturer Name</th>
+        <th>Drug Class</th>
+        </tr>
       </thead>
       <tbody>
         {data.map((row, index) => (
@@ -25,6 +28,7 @@ export default function Result({ data }) {
             <td>{row.generic_name}</td>
             <td>{row.dosage_form}</td>
             <td>{row.manufacturer_name}</td>
+            <td>{ row.drug_class }</td>
           </tr>
         ))}
       </tbody>
