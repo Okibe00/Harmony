@@ -28,7 +28,7 @@ Manage drug brand records.
 ---
 
 ### **3. Code Endpoints**
-Manage product codes assigned to drugs.
+Manage product c odes assigned to drugs.
 
 | **Method** | **Endpoint**             | **Description**                          |
 |------------|--------------------------|------------------------------------------|

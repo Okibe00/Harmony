@@ -31,6 +31,7 @@ class dbStorage {
     };
     // console.log(config);
     this.#conn = mysql.createPool({ connectionLimit: 50, ...config });
+    this.sessionStore = this.#conn;
     dbStorage.instance = this;
   }
 
@@ -45,7 +46,7 @@ class dbStorage {
   }
 
   /**
-   * execute a query string
+   * execute a queqry string
    * @returns query result
    *
    */

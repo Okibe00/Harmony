@@ -8,6 +8,7 @@
 import Manufacturers from '../models/manufacturer.js';
 import { storage } from '../models/engine/db.js';
 import Brands from '../models/brand.js';
+import { v4 as uuidv4 } from 'uuid';
 
 export const getProductCode = ({
   manufacturerId,
@@ -18,7 +19,7 @@ export const getProductCode = ({
   if (!manufacturerId && !brandName && !dosageForm && !drugClass) {
     return 0;
   }
-  const manufacturerCode = padCode(manufacturerId, 3, '0');
+  const manufacturerCode = padCode(uuidv4(), 5, '0');
   const dosageFormCode = padCode(dosageForm, 2, '0');
   const productCode = `${brandName.slice(
     0,
@@ -48,7 +49,7 @@ let padCode = (val, padSize = 3, padString = '0') => {
   } else if (strLen === 3) {
     return valString;
   } else {
-    return valString.slice(0, 3);
+    return valString.slice(0, padSize + 1);
   }
 };
 
