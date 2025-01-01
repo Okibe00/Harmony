@@ -10,6 +10,7 @@ import session from 'express-session';
 import passport from 'passport';
 import MySQLSessionFactory from 'express-mysql-session';
 import { storage } from '../models/engine/db.js';
+import cors from 'cors';
 
 const MySQLStore = MySQLSessionFactory(session);
 const sessionStore = new MySQLStore(
@@ -44,7 +45,7 @@ app.use(
     store: sessionStore
   })
 );
-
+app.use(cors());
 //setting up passport
 app.use(passport.initialize());
 app.use(passport.session());

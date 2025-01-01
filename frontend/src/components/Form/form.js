@@ -21,92 +21,112 @@ import './form.css';
 //   return ();
 // }
 
-const handleSubmit = (event, state, endpoint) => {
+const handleSubmit = (event, state, endpoint, httpMethod) => {
   event.preventDefault();
-  console.log(state);
+  console.log(endpoint);
   //makes the api call with state values
   try {
-    //make the api call
-    fetch('url', {
-      method: '',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
+    if (httpMethod === 'POST') {
+      fetch(endpoint, {
+        method: httpMethod,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ state }),
+      });
+    } else {
+      fetch(endpoint, {
+        method: httpMethod,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    }
   } catch (error) {
-    console.log('failed to fetch')
+    console.log('failed to fetch');
   }
-}
+  console.log({ status: 'Ok' });
+};
 
 export const DeleteBrandForm = memo(function DeleteBrandForm() {
   const [productCode, setProductCode] = useState({product_code: ''});
+  const data = productCode;
+  console.log(data);
   const handleChange = (e) => {
-    setProductCode({[e.target.name]: e.target.value});
-  }
+    setProductCode({ [e.target.name]: e.target.value });
+  };
   return (
     <form>
       <h1>Delete Brand</h1>
-      <label className='block'>
+      <label className="block">
         Product Code
         <input
-          name='product_code'
-          placeholder='Enter product code'
+          name="product_code"
+          placeholder="Enter product code"
           type="text"
           onChange={(e) => handleChange(e)}
-          className='block'
+          className="block"
         />
       </label>
       <Button
-        config={{ type: "submit", label: "Submit" }}
-        handleSubmit={(e) => handleSubmit(e, productCode, "url")}
+        config={{ type: 'submit', label: 'Submit' }}
+        handleSubmit={(e) =>
+          handleSubmit(
+            e,
+            productCode,
+            `http://localhost:5000/api/brands/`,
+            'DELETE'
+          )
+        }
       />
     </form>
-  )
-})
+  );
+});
 
 export const DeleteManufacturerForm = memo(function DeleteBrandForm() {
-  const [manufacturerName, setManufacturerName] = useState({manufacturer_name: ''});
+  const [manufacturerName, setManufacturerName] = useState({
+    manufacturer_name: '',
+  });
   const handleChange = (e) => {
-    setManufacturerName({[e.target.name]: e.target.value});
-  }
+    setManufacturerName({ [e.target.name]: e.target.value });
+  };
   return (
     <form>
       <h1>Delete Manufacturer</h1>
       <label>
         Manufacturer Name:
         <input
-          placeholder='Enter manufacturer name'
+          placeholder="Enter manufacturer name"
           type="text"
           onChange={(e) => handleChange(e)}
         />
       </label>
       <Button
-        config={{ type: "submit", label: "Submit" }}
-        handleSubmit={(e) => handleSubmit(e, manufacturerName, "url")}
+        config={{ type: 'submit', label: 'Submit' }}
+        handleSubmit={(e) => handleSubmit(e, manufacturerName, 'url')}
       />
     </form>
-  )
-})
-
+  );
+});
 
 export const AddBrandForm = memo(function AddBrandForm() {
   const [brand, setBrand] = useState({
-    'manufacturer_name': null,
-    'generic_name': null,
-    'brand_name': null,
-    'manufacturer_id': null,
-    'nafdac_no': null,
-    'pack_size': null,
-    'drug_class': null,
-    'category': null,
-    'dosage_form': null,
-    'active_ingredients': null,
-    'market_status': null
+    manufacturer_name: null,
+    generic_name: null,
+    brand_name: null,
+    manufacturer_id: null,
+    nafdac_no: null,
+    pack_size: null,
+    drug_class: null,
+    category: null,
+    dosage_form: null,
+    active_ingredients: null,
+    market_status: null,
   });
 
   const handleChange = (e) => {
     setBrand({ ...brand, [e.target.name]: e.target.name });
-  }
+  };
   return (
     <form>
       <h1>New Brand</h1>
@@ -192,61 +212,60 @@ export const AddBrandForm = memo(function AddBrandForm() {
         />
       </label>
       <Button
-        config={{ type: "submit", label: 'Submit' }}
-        handleSubmit={(e) => handleSubmit(e, brand, "url")}
+        config={{ type: 'submit', label: 'Submit' }}
+        handleSubmit={(e) => handleSubmit(e, brand, 'url')}
       />
     </form>
-  )
+  );
 });
-export const AddUserForm = memo(
-  function AddUserForm() {
-    const [user, setUser] = useState({
-      user_name: '',
-      password: ''
-    });
+export const AddUserForm = memo(function AddUserForm() {
+  const [user, setUser] = useState({
+    user_name: '',
+    password: '',
+  });
 
-    const handleChange = (e) => {
-      setUser(({ ...user, [e.target.name]: e.target.value }))
-    }
+  const handleChange = (e) => {
+    setUser({ ...user, [e.target.name]: e.target.value });
+  };
 
-    return (
-      <form>
-        <h1>New User</h1>
-        <label>
-          Name:
-          <input type="text"
-            placeholder="Enter name"
-            name='user_name'
-            onChange={(e) => handleChange(e)}
-          />
-        </label>
-        <label>
-          Password
-          <input
-            type="password"
-            name='password'
-            value={user.password}
-            placeholder="Enter password"
-            onChange={(e) => handleChange(e)}
-          />
-        </label>
-        <Button
-          config={{ type: 'submit', label: 'Submit' }}
-          handleSubmit={(e) => handleSubmit(e, user, "url")}
+  return (
+    <form>
+      <h1>New User</h1>
+      <label>
+        Name:
+        <input
+          type="text"
+          placeholder="Enter name"
+          name="user_name"
+          onChange={(e) => handleChange(e)}
         />
-      </form>
-    )
-  }
-);
+      </label>
+      <label>
+        Password
+        <input
+          type="password"
+          name="password"
+          value={user.password}
+          placeholder="Enter password"
+          onChange={(e) => handleChange(e)}
+        />
+      </label>
+      <Button
+        config={{ type: 'submit', label: 'Submit' }}
+        handleSubmit={(e) => handleSubmit(e, user, 'url')}
+      />
+    </form>
+  );
+});
 
 export const AddManufacturerForm = memo(function AddManufacturerForm() {
   const [manufacturer, setManufacturer] = useState({
     manufacturer_name: '',
-    country: ''
+    country: '',
   });
   const handleChange = (e) => {
     setManufacturer({ ...manufacturer, [e.target.name]: e.target.value });
-  }
+  };
   return (
     <form>
       <h1>New Manufacturer</h1>
@@ -269,9 +288,9 @@ export const AddManufacturerForm = memo(function AddManufacturerForm() {
         />
       </label>
       <Button
-        config={{ type: "submit", label: "submit" }}
-        handleSubmit={(e) => handleSubmit(e, manufacturer, "url")}
-     />
+        config={{ type: 'submit', label: 'submit' }}
+        handleSubmit={(e) => handleSubmit(e, manufacturer, 'url')}
+      />
     </form>
-  )
-})
+  );
+});
