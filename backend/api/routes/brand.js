@@ -75,17 +75,18 @@ router.post(
   async (request, response) => {
     const error = validationResult(request);
     if (!error.isEmpty()) {
-      return response.status(400).json({ errors: error.array() });
+      console.error(error.array());
+      return response.status(400).json({ errors: 'BAD REQUEST' });
     }
     const data = matchedData(request);
     try {
       const brand = new Brands(data);
-      //when should a product code be created? as soon as a brand is created?
       const productCode = new Codes(brand);
       await storage.save(brand);
       await storage.save(productCode);
       return response.status(200).json({ status: 'Ok' });
     } catch (error) {
+      console.error(error);
       return response.status(500).json({ error: error.message });
     }
   }
@@ -93,31 +94,30 @@ router.post(
 //TODO: Add update endpoint
 
 router.delete(
-  '/brands/:id',
-  param('product_code').notEmpty().escape(),
+  '/brands/:id/',
+  param('id').notEmpty().escape(),
   async (request, response) => {
     const err = validationResult(request);
     if (!err.isEmpty()) {
-      return response.status(400).json({
-        errrors: err.array(),
-      });
+      console.error(err.array());
+      return response.status(400);
     }
     const data = matchedData(request);
-    const { product_code } = data;
+    const { id } = data;
     try {
       const query = `SELECT brand_id FROM codes WHERE product_code=?`;
-      console.log(product_code);
-      const [[row]] = await storage.execute(query, [product_code]);
-      console.log(row);
-      return response.status(200).json(row);
-      // await storage.delete(id, 'brands');
+      //brand may not exist in that case
+      const [row] = await storage.execute(query, [id]);
+      if (!row.length) {
+        return response.status(200).json({ found: 0 });
+      }
+      const brand_id = row[0].brand_id;
+      await storage.delete(brand_id, 'brands');
+      return response.status(200).json({ found: 1 });
     } catch (err) {
       console.error(err);
-      return response.status(500).json({
-        error: 'Failed to delete manufacturer',
-      });
+      return response.status(500);
     }
-    // return response.status(200).json({ status: 'Ok' });
   }
 );
 //Search brands by name or manufacturer
