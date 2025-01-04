@@ -42,8 +42,9 @@ router.post(
     const errors = validationResult(request);
 
     if (!errors.isEmpty()) {
+      console.log(errors.array())
       return response.status(400).json({
-        errors: errors.array(),
+        errors: 'BAD REQUEST'
       });
     }
     const data = matchedData(request);
@@ -51,7 +52,8 @@ router.post(
     try {
       await storage.save(man);
     } catch (err) {
-      return response.status(500).json({ error: err.message });
+      console.error(err)
+      return response.status(500).json({ status: 'Failed' });
     }
     return response.status(200).json({
       status: 'success',
@@ -74,14 +76,11 @@ router.delete(
     const data = matchedData(request);
     const { id } = data;
     try {
-      var rs = await storage.delete(id, 'manufacturers');
+      await storage.delete(id, 'manufacturers');
     } catch (err) {
-      return response.status(500).json({
-        error: err.message,
-        r: rs,
-      });
+      console.log(err);
+      return response.status(500);
     }
-    return response.status(200).json({ id, rs });
   }
 );
 
