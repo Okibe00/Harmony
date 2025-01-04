@@ -18,10 +18,9 @@ function App() {
       </header>
       <main className="main">
         {/* <Admin /> */}
-        {/* <Login /> */}
+        <Login />
         {/* <Filter /> */}
-        <Admin/>
-        {/* <Result data={drugs} /> */}
+        {/* <Admin/> */}
       </main>
       <section className="app-footer">
         <Footer />
