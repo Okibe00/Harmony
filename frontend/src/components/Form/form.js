@@ -14,28 +14,29 @@
  * delete user
  */
 
-import { memo, useState } from 'react';
+import { dosageForm } from '../../../src/utils/static/dosageForm';
+import { memo, useEffect, useState } from 'react';
 import Button from '../Button/button';
 import './form.css';
+import { drugClass } from '../../utils/static/drugClass';
 // export default function Form() {
 //   return ();
 // }
 
-const handleSubmit = (event, state, endpoint, httpMethod) => {
+const handleSubmit = async (event, state, endpoint, httpMethod) => {
   event.preventDefault();
-  console.log(endpoint);
-  //makes the api call with state values
+  let res;
   try {
     if (httpMethod === 'POST') {
-      fetch(endpoint, {
+      res = await fetch(endpoint, {
         method: httpMethod,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ state }),
+        body: JSON.stringify({ ...state }),
       });
     } else {
-      fetch(endpoint, {
+      res = await fetch(endpoint, {
         method: httpMethod,
         headers: {
           'Content-Type': 'application/json',
@@ -45,18 +46,22 @@ const handleSubmit = (event, state, endpoint, httpMethod) => {
   } catch (error) {
     console.log('failed to fetch');
   }
-  console.log({ status: 'Ok' });
+  if (!res.ok) {
+    console.error('Bad response');
+    alert('Failed');
+  } else {
+    alert(`Success`);
+  }
 };
 
 export const DeleteBrandForm = memo(function DeleteBrandForm() {
-  const [productCode, setProductCode] = useState({product_code: ''});
-  const data = productCode;
-  console.log(data);
+  const [productCode, setProductCode] = useState({ product_code: '' });
+
   const handleChange = (e) => {
     setProductCode({ [e.target.name]: e.target.value });
   };
   return (
-    <form>
+    <form id="">
       <h1>Delete Brand</h1>
       <label className="block">
         Product Code
@@ -74,7 +79,9 @@ export const DeleteBrandForm = memo(function DeleteBrandForm() {
           handleSubmit(
             e,
             productCode,
-            `http://localhost:5000/api/brands/`,
+            `http://localhost:5000/api/brands/`.concat(
+              productCode.product_code
+            ),
             'DELETE'
           )
         }
@@ -84,26 +91,69 @@ export const DeleteBrandForm = memo(function DeleteBrandForm() {
 });
 
 export const DeleteManufacturerForm = memo(function DeleteBrandForm() {
-  const [manufacturerName, setManufacturerName] = useState({
-    manufacturer_name: '',
-  });
+  useEffect(() => {
+    let body;
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          'http://localhost:5000/api/manufacturers/',
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        if (!response.ok) {
+          alert('Failed to fetch manufacturers');
+          return;
+        }
+        body = await response.json();
+        setManufacturers(body);
+      } catch (error) {
+        console.log('failed to fetch manufacturers');
+      }
+    };
+    fetchData();
+  }, []);
+  const [selectedMan, setSelectedMan] = useState({ id: '', name: '' });
+  const [manufacturers, setManufacturers] = useState([
+    {
+      id: '',
+      name: '',
+    },
+  ]);
   const handleChange = (e) => {
-    setManufacturerName({ [e.target.name]: e.target.value });
+    const id = e.target.options[e.target.selectedIndex].id;
+    const man = { id: id, name: e.target.value };
+    setSelectedMan(man);
   };
   return (
     <form>
       <h1>Delete Manufacturer</h1>
       <label>
         Manufacturer Name:
-        <input
-          placeholder="Enter manufacturer name"
-          type="text"
-          onChange={(e) => handleChange(e)}
-        />
+        <select value={selectedMan.name} onChange={(e) => handleChange(e)}>
+          {manufacturers.map((man) => {
+            return (
+              <option value={man.name} key={man.id} id={man.id}>
+                {man.name}
+              </option>
+            );
+          })}
+          ;
+        </select>
       </label>
       <Button
         config={{ type: 'submit', label: 'Submit' }}
-        handleSubmit={(e) => handleSubmit(e, manufacturerName, 'url')}
+        handleSubmit={(e) =>
+          handleSubmit(
+            e,
+            selectedMan,
+            'http://localhost:5000/api/manufacturers/'.concat(selectedMan.id),
+            'DELETE'
+          )
+        }
       />
     </form>
   );
@@ -111,37 +161,90 @@ export const DeleteManufacturerForm = memo(function DeleteBrandForm() {
 
 export const AddBrandForm = memo(function AddBrandForm() {
   const [brand, setBrand] = useState({
-    manufacturer_name: null,
     generic_name: null,
     brand_name: null,
     manufacturer_id: null,
     nafdac_no: null,
     pack_size: null,
-    drug_class: null,
-    category: null,
-    dosage_form: null,
+    drug_class: 'Analgesic',
+    category: 'OTC',
+    dosage_form: 'Tablet',
     active_ingredients: null,
-    market_status: null,
+    market_status: 'Active',
   });
+  const [manufacturers, setManufacturers] = useState([{}]);
+
+  useEffect(() => {
+    let body;
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          'http://localhost:5000/api/manufacturers/',
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        if (!response.ok) {
+          alert('Failed to fetch manufacturers');
+          return;
+        }
+        body = await response.json();
+        setManufacturers(body);
+        setBrand({ ...brand, manufacturer_id: body[0].id });
+      } catch (error) {
+        console.log('failed to fetch manufacturers');
+      }
+    };
+    fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleChange = (e) => {
-    setBrand({ ...brand, [e.target.name]: e.target.name });
+    const name = e.target.name;
+    let value = '';
+    if (name === 'manufacturer_id') {
+      value = e.target.options[e.target.selectedIndex].id;
+      setBrand({ ...brand, [e.target.name]: value });
+    } else {
+      setBrand({ ...brand, [e.target.name]: e.target.value });
+    }
   };
   return (
-    <form>
+    <form id="brand-form">
       <h1>New Brand</h1>
       <label>
         Manufacturer:
+        <select
+          name="manufacturer_id"
+          id="brand_man"
+          onChange={(e) => handleChange(e)}
+        >
+          {manufacturers.map((man, index) => {
+            return (
+              <option value={man.name} key={index} id={man.id}>
+                {man.name}
+              </option>
+            );
+          })}
+        </select>
+      </label>
+      <label>
+        Brand Name:
         <input
+          autoComplete="on"
           type="text"
-          name="manufacturer_name"
-          id="manufacturer_name"
+          name="brand_name"
+          id="brand_name"
           onChange={(e) => handleChange(e)}
         />
       </label>
       <label>
         Generic Name:
         <input
+          autoComplete="on"
           type="text"
           name="generic_name"
           id="generic_name"
@@ -168,34 +271,53 @@ export const AddBrandForm = memo(function AddBrandForm() {
       </label>
       <label>
         Drug Class:
-        <input
-          type="text"
+        <select
           name="drug_class"
           id="drug_class"
           onChange={(e) => handleChange(e)}
-        />
+        >
+          {drugClass.map((dc, index) => {
+            return (
+              <option value={dc} key={index}>
+                {dc}
+              </option>
+            );
+          })}
+        </select>
       </label>
       <label>
         Category:
-        <input
-          type="text"
+        <br />
+        <select
           name="category"
           id="category"
+          defaultValue={'OTC'}
           onChange={(e) => handleChange(e)}
-        />
+        >
+          <option value="OTC">OTC</option>
+          <option value="POM">POM</option>
+        </select>
       </label>
       <label>
         Dosage Form:
-        <input
-          type="text"
+        <select
           name="dosage_form"
           id="dosage_form"
           onChange={(e) => handleChange(e)}
-        />
+        >
+          {dosageForm.map((df, index) => {
+            return (
+              <option value={df.toLowerCase()} key={index}>
+                {df}
+              </option>
+            );
+          })}
+        </select>
       </label>
       <label>
         Active Ingredients:
         <input
+          autoComplete="on"
           type="text"
           name="active_ingredients"
           id="active_ingredients"
@@ -204,24 +326,29 @@ export const AddBrandForm = memo(function AddBrandForm() {
       </label>
       <label>
         Market Status:
-        <input
-          type="text"
+        <select
           name="market_status"
           id="market_status"
           onChange={(e) => handleChange(e)}
-        />
+        >
+          <option value="active">Active</option>
+          <option value="discontinued">Discontinued</option>
+        </select>
       </label>
       <Button
         config={{ type: 'submit', label: 'Submit' }}
-        handleSubmit={(e) => handleSubmit(e, brand, 'url')}
+        handleSubmit={(e) =>
+          handleSubmit(e, brand, 'http://localhost:5000/api/brands/', 'POST')
+        }
       />
     </form>
   );
 });
 export const AddUserForm = memo(function AddUserForm() {
   const [user, setUser] = useState({
-    user_name: '',
+    username: '',
     password: '',
+    email: '',
   });
 
   const handleChange = (e) => {
@@ -232,17 +359,20 @@ export const AddUserForm = memo(function AddUserForm() {
     <form>
       <h1>New User</h1>
       <label>
-        Name:
+        User Name:
         <input
+          autoComplete="on"
           type="text"
           placeholder="Enter name"
-          name="user_name"
+          name="username"
+          value={user.username}
           onChange={(e) => handleChange(e)}
         />
       </label>
       <label>
         Password
         <input
+          autoComplete="on"
           type="password"
           name="password"
           value={user.password}
@@ -250,17 +380,119 @@ export const AddUserForm = memo(function AddUserForm() {
           onChange={(e) => handleChange(e)}
         />
       </label>
+      <label>
+        Email
+        <input
+          autoComplete="on"
+          type="email"
+          name="email"
+          value={user.email}
+          placeholder="Enter email"
+          onChange={(e) => handleChange(e)}
+        />
+      </label>
       <Button
         config={{ type: 'submit', label: 'Submit' }}
-        handleSubmit={(e) => handleSubmit(e, user, 'url')}
+        handleSubmit={(e) =>
+          handleSubmit(e, user, `http://localhost:5000/api/users/`, 'POST')
+        }
       />
     </form>
   );
 });
 
+export const DeleteUserForm = memo(function DeleteUserForm() {
+  const [users, setUsers] = useState([{ id: '', username: '' }]);
+  const [selectedUserId, setSelectedUserId] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let data;
+        let response = await fetch('http://localhost:5000/api/users/', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (!response.ok) {
+          throw new Error();
+        }
+        data = await response.json();
+        setUsers(data);
+        setSelectedUserId(data[0].id);
+      } catch (error) {
+        console.log('Failed to fetch users');
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const defaultUser = { id: null, username: 'No user Available' };
+    const findUser = users.filter((user) => user.id === selectedUserId);
+    if (!findUser.length) {
+      alert('Select a user');
+      return;
+    }
+    const response = await fetch(
+      `http://localhost:5000/api/users/${selectedUserId}/`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    if (!response.ok) {
+      alert('Failed!');
+      return;
+    } else {
+      alert('Success!');
+    }
+    const newUsers = users.filter((user) => user.id !== selectedUserId);
+    if (!newUsers.length) {
+      setUsers([defaultUser]);
+      return;
+    }
+    setUsers(newUsers);
+    setSelectedUserId(newUsers[0].id);
+  };
+
+  const handleChange = (e) => {
+    const userId = e.target.options[e.target.selectedIndex].id;
+    setSelectedUserId(userId);
+  };
+  return (
+    <form>
+      <h1>Delete User</h1>
+      <label>
+        <select name="users" onChange={(e) => handleChange(e)}>
+          {users.map((user) => {
+            return (
+              <option
+                value={user.username}
+                key={user.id}
+                id={user.id}
+                onClick={(e) => handleChange(e)}
+              >
+                {user.username}
+              </option>
+            );
+          })}
+        </select>
+      </label>
+      <Button
+        config={{ type: 'submit', label: 'submit' }}
+        handleSubmit={(e) => handleSubmit(e)}
+      />
+    </form>
+  );
+});
 export const AddManufacturerForm = memo(function AddManufacturerForm() {
   const [manufacturer, setManufacturer] = useState({
-    manufacturer_name: '',
+    name: '',
     country: '',
   });
   const handleChange = (e) => {
@@ -274,7 +506,7 @@ export const AddManufacturerForm = memo(function AddManufacturerForm() {
         <input
           type="text"
           onChange={(e) => handleChange(e)}
-          name="manufacturer_name"
+          name="name"
           value={manufacturer.manufacturer_name}
         />
       </label>
@@ -289,7 +521,14 @@ export const AddManufacturerForm = memo(function AddManufacturerForm() {
       </label>
       <Button
         config={{ type: 'submit', label: 'submit' }}
-        handleSubmit={(e) => handleSubmit(e, manufacturer, 'url')}
+        handleSubmit={(e) =>
+          handleSubmit(
+            e,
+            manufacturer,
+            'http://localhost:5000/api/manufacturers/',
+            'POST'
+          )
+        }
       />
     </form>
   );
