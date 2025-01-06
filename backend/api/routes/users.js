@@ -12,6 +12,7 @@ import {
 } from 'express-validator';
 import { validateUser } from '../../utils/validation.js';
 import { Router } from 'express';
+import { hashPwd } from '../../utils/helper.js';
 
 const router = Router();
 
@@ -33,6 +34,7 @@ router.post('/users/', checkSchema(validateUser), async (request, response) => {
     }
     const data = matchedData(request);
     const newUser = new Users(data);
+    newUser.password = hashPwd(newUser.password, 10);
     await storage.save(newUser);
     return response.status(200).json({ status: 'Ok' });
   } catch (error) {
