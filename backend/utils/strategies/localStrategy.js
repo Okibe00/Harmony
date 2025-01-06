@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Strategy } from 'passport-local';
 import { storage } from '../../models/engine/db.js';
+import bcrypt from 'bcrypt';
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -31,7 +32,7 @@ export default passport.use(
       if (!row) {
         throw new Error('User not Found');
       }
-      if (row.password != password) {
+      if (!bcrypt.compareSync(password, row.password)) {
         throw new Error('Invalid credentials');
       }
       done(null, row);
