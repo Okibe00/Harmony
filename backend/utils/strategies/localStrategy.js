@@ -23,7 +23,6 @@ passport.deserializeUser(async (id, done) => {
 
 export default passport.use(
   new Strategy(async (username, password, done) => {
-    console.log(username, password);
     try {
       const [[row]] = await storage.execute(
         'SELECT * FROM users WHERE username=?',
