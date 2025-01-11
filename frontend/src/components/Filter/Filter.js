@@ -45,14 +45,14 @@ export default function Filter() {
     setSearchData({ ...searchData, [e.target.name]: e.target.value });
   };
   const filterUtil = (state, filter) => {
+    console.log(state, filter);
     const data = state.filter((obj) => {
+      console.log(obj.dosage_form)
       return (
         obj.dosage_form.toLowerCase() === filter.toLowerCase() ||
         obj.manufacturer_name.toLowerCase() === filter.toLowerCase() ||
         obj.drug_class.toLowerCase() === filter.toLowerCase() ||
-        obj.generic_name.toLowerCase() === filter.toLowerCase() ||
-        obj.market_status.toLowerCase() === filter.toLowerCase() ||
-        obj.category.toLowerCase() === filter.toLowerCase()
+        obj.generic_name.toLowerCase() === filter.toLowerCase()
       );
     });
     return data;
@@ -130,7 +130,7 @@ export default function Filter() {
             />
           </span>
           <Button
-            config={{ type: 'submit', label: 'Search' }}
+            config={{ type: 'submit', label: 'Search', class: 'search-btn' }}
             handleSubmit={handleSubmit}
           />
         </div>
