@@ -46,7 +46,10 @@ app.use(
     store: sessionStore
   })
 );
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
 //setting up passport
 app.use(passport.initialize());
 app.use(passport.session());
