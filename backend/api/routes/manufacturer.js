@@ -12,7 +12,6 @@ import {
 } from 'express-validator';
 import Manufacturers from '../../models/manufacturer.js';
 const router = Router();
-
 // GET	/api/manufacturers	Retrieve all manufacturers
 
 /**
@@ -20,6 +19,13 @@ const router = Router();
  * @route GET /api/manufacturers/
  *
  */
+export const authenticated = (request, response, next) => {
+  if (request.isAuthenticated()) {
+    return next();
+  } else {
+    response.status(401).json('Unauthenticated');
+  }
+}
 router.get('/manufacturers/', async (request, response) => {
   const query = 'SELECT * FROM manufacturers';
   const [row] = await storage.execute(query);
@@ -36,7 +42,7 @@ router.get('/manufacturers/:id/', async (request, response) => {
 });
 
 router.post(
-  '/manufacturers/',
+  '/manufacturers/', authenticated,
   checkSchema(validateManufacturer),
   async (request, response) => {
     const errors = validationResult(request);
@@ -64,7 +70,7 @@ router.post(
 //TODO: implement update route
 
 router.delete(
-  '/manufacturers/:id',
+  '/manufacturers/:id', authenticated,
   param('id').notEmpty().escape(),
   async (request, response) => {
     const err = validationResult(request);
@@ -95,7 +101,6 @@ router.get(
       return response.status(400).json({ status: 'Failure' });
     }
     const { id } = matchedData(request);
-    console.log(id);
     const query = `
     SELECT
       b.brand_name,
