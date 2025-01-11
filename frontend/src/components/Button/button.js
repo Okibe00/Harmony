@@ -8,7 +8,7 @@
 export default function Button({config={}, handleSubmit=() => {} }) {
   return (
     <>
-      <button type={config.type} onClick={(e) => handleSubmit(e)}>{config.label}</button>
+      <button className={ config.class } type={config.type} onClick={(e) => handleSubmit(e)}>{config.label}</button>
     </>
   );
 }
