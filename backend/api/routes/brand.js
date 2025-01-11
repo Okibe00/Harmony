@@ -14,7 +14,7 @@ import {
 import { validateBrandDetails } from '../../utils/validation.js';
 import Brands from '../../models/brand.js';
 import Codes from '../../models/drugCode.js';
-
+import { authenticated } from './manufacturer.js';
 const router = Router();
 
 router.get('/brands/', async (request, response) => {
@@ -70,7 +70,7 @@ router.get(
 );
 
 router.post(
-  '/brands/',
+  '/brands/',authenticated,
   checkSchema(validateBrandDetails),
   async (request, response) => {
     const error = validationResult(request);
@@ -94,7 +94,7 @@ router.post(
 //TODO: Add update endpoint
 
 router.delete(
-  '/brands/:id/',
+  '/brands/:id/',authenticated,
   param('id').notEmpty().escape(),
   async (request, response) => {
     const err = validationResult(request);
@@ -165,7 +165,6 @@ router.post(
       OR LOWER(b.market_status) LIKE ?
       OR LOWER(b.category) LIKE ?
     `;
-    console.log(keyword);
     try {
       const [row] = await storage.execute(query, [
         `%${keyword}%`.toLowerCase(),
