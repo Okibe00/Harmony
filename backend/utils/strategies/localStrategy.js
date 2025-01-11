@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Strategy } from 'passport-local';
 import { storage } from '../../models/engine/db.js';
+import bcrypt from 'bcrypt';
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -23,7 +24,6 @@ passport.deserializeUser(async (id, done) => {
 
 export default passport.use(
   new Strategy(async (username, password, done) => {
-    console.log(username, password);
     try {
       const [[row]] = await storage.execute(
         'SELECT * FROM users WHERE username=?',
@@ -32,7 +32,7 @@ export default passport.use(
       if (!row) {
         throw new Error('User not Found');
       }
-      if (row.password != password) {
+      if (!bcrypt.compareSync(password, row.password)) {
         throw new Error('Invalid credentials');
       }
       done(null, row);

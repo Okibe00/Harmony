@@ -3,49 +3,65 @@
  *
  */
 import './Login.css';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import Button from '../Button/button.js';
-const config= {label: 'submit',type:'submit'}
+import { useNavigate } from 'react-router-dom';
+import { loginContext } from '../../loginContext.js';
+const config = { label: 'submit', type: 'submit', class: 'login-btn' };
+
 export default function Login() {
-  const [currentUser, setCurrentUser] = useState({
-    user_name: '',
-    password: ''
-  })
-  const handleSubmit = () => {
-    //shoot a call to the user end point
+  const context = useContext(loginContext);
+  const [user, setUser] = useState({
+    username: '',
+    password: '',
+  });
+  const navigate = useNavigate();
+  const handleSubmit = async () => {
+    const response = await fetch('http://localhost:5000/api/auth/login/', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user)
+    });
+
+    if (response.ok) {
+      context.user = user;
+      context.isLoggedIn = true;
+      navigate('/admin');
+      alert("login successful");
+      return;
+    }
+    alert('Login Failed');
   };
+
   const handleChange = (e) => {
-    setCurrentUser({...currentUser, [e.target.name]: e.target.value});
+    setUser({ ...user, [e.target.name]: e.target.value });
   };
+  
   return (
-    <div className='login-cont'>
-      <div className="login">
-        <div className="input-box-cont">
-          <h1>Login</h1>
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            placeholder="Enter a username"
-            onChange={(e) => handleChange(e)}
-            required={true}
-            name="user_name"
-            id="name"
-          /> <br />
-          <label htmlFor="password">Password</label>
-          <input
-            name="password"
-            id="password"
-            type="email"
-            placeholder="Enter a email"
-            onChange={(e) => handleChange(e)}
-            required={true}
-          /> <br />
-          <Button
-            config={config}
-            handleSubmit={handleSubmit}
-          />
-        </div>
-      </div>
+    <div className="login-container">
+      <h1>Login</h1>
+      <label htmlFor="username">Username</label>
+      <input
+        type="text"
+        placeholder="Enter username"
+        onChange={(e) => handleChange(e)}
+        required={true}
+        name="username"
+        id="username"
+      />
+      <label htmlFor="password">Password</label>
+      <input
+        name="password"
+        id="password"
+        type="password"
+        placeholder="Enter password"
+        onChange={(e) => handleChange(e)}
+        required={true}
+      />
+      <Button config={config} handleSubmit={handleSubmit} />
     </div>
-  )
+  );
 }

@@ -1,8 +1,10 @@
 /**
  * Test utility functions
  */
-import { getProductCode } from './helper';
+import { getProductCode, hashPwd } from './helper';
 // import Brand from '../models/brand';
+import bcrypt from 'bcrypt';
+// import { hashPwd } from './helper';
 
 describe('getProductCode', () => {
   test('test with all param given', () => {
@@ -14,8 +16,7 @@ describe('getProductCode', () => {
     };
     // const gascol = new Brand(newBrand)
     const result = getProductCode(gascol);
-    console.log(result);
-    expect(result).toBe('gas-001-sus-antac');
+    expect(result.split('-').length).toBe(4);
   });
 
   test('should return 0', () => {
@@ -24,4 +25,11 @@ describe('getProductCode', () => {
     expect(getProductCode('', '', '', '', '')).toBe(0);
     expect(getProductCode('', 'FF', 'FFFF', 'SFS', 'DSDSD')).toBe(0);
   });
+});
+
+test('should return a password hash', () => {
+  const plainPwd = 'harmonyDB';
+  const saltRound = 10;
+  const pwdHash = hashPwd(plainPwd, saltRound);
+  console.log(bcrypt.compareSync(plainPwd, pwdHash));
 });

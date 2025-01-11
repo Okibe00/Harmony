@@ -2,14 +2,14 @@
  * @description defines the user class
  */
 
-import BaseModel from './baseModel';
+import BaseModel from './baseModel.js';
 /**
  * Represents a user in the app
  */
 export default class Users extends BaseModel {
   /**
-   * 
-   * @param {Object} user {username, password, email}  
+   *
+   * @param {Object} user {username, password, email}
    */
   constructor(user) {
     super(user);

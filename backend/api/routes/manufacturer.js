@@ -12,7 +12,6 @@ import {
 } from 'express-validator';
 import Manufacturers from '../../models/manufacturer.js';
 const router = Router();
-
 // GET	/api/manufacturers	Retrieve all manufacturers
 
 /**
@@ -20,6 +19,13 @@ const router = Router();
  * @route GET /api/manufacturers/
  *
  */
+export const authenticated = (request, response, next) => {
+  if (request.isAuthenticated()) {
+    return next();
+  } else {
+    response.status(401).json('Unauthenticated');
+  }
+}
 router.get('/manufacturers/', async (request, response) => {
   const query = 'SELECT * FROM manufacturers';
   const [row] = await storage.execute(query);
@@ -36,14 +42,15 @@ router.get('/manufacturers/:id/', async (request, response) => {
 });
 
 router.post(
-  '/manufacturers/',
+  '/manufacturers/', authenticated,
   checkSchema(validateManufacturer),
   async (request, response) => {
     const errors = validationResult(request);
 
     if (!errors.isEmpty()) {
+      console.log(errors.array())
       return response.status(400).json({
-        errors: errors.array(),
+        errors: 'BAD REQUEST'
       });
     }
     const data = matchedData(request);
@@ -51,7 +58,8 @@ router.post(
     try {
       await storage.save(man);
     } catch (err) {
-      return response.status(500).json({ error: err.message });
+      console.error(err)
+      return response.status(500).json({ status: 'Failed' });
     }
     return response.status(200).json({
       status: 'success',
@@ -62,7 +70,7 @@ router.post(
 //TODO: implement update route
 
 router.delete(
-  '/manufacturers/:id',
+  '/manufacturers/:id', authenticated,
   param('id').notEmpty().escape(),
   async (request, response) => {
     const err = validationResult(request);
@@ -74,14 +82,11 @@ router.delete(
     const data = matchedData(request);
     const { id } = data;
     try {
-      var rs = await storage.delete(id, 'manufacturers');
+      await storage.delete(id, 'manufacturers');
     } catch (err) {
-      return response.status(500).json({
-        error: err.message,
-        r: rs,
-      });
+      console.log(err);
+      return response.status(500);
     }
-    return response.status(200).json({ id, rs });
   }
 );
 
@@ -96,7 +101,6 @@ router.get(
       return response.status(400).json({ status: 'Failure' });
     }
     const { id } = matchedData(request);
-    console.log(id);
     const query = `
     SELECT
       b.brand_name,

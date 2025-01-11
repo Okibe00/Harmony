@@ -3,6 +3,7 @@
  */
 import manufacturerRouter from './routes/manufacturer.js';
 import brandRouter from './routes/brand.js';
+import userRouter from './routes/users.js';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import authRoute from './routes/auth.js';
@@ -45,7 +46,10 @@ app.use(
     store: sessionStore
   })
 );
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
 //setting up passport
 app.use(passport.initialize());
 app.use(passport.session());
@@ -56,6 +60,7 @@ app.get('/', (request, response) => {
 app.use('/api/', manufacturerRouter);
 app.use('/api/', brandRouter);
 app.use('/api/auth/', authRoute);
+app.use('/api/', userRouter);
 app.listen(port, () => {
   console.log('Running on  port ' + port);
 });

@@ -1,3 +1,5 @@
+import { escape } from "mysql2";
+
 /**
  * @description validation schemas
  */
@@ -81,7 +83,7 @@ export const validateDrugDetails = {
 };
 
 export const validateUser = {
-  user_name: {
+  username: {
     exists: {
       errorMessage: 'Missing user name',
     },
@@ -92,6 +94,7 @@ export const validateUser = {
       options: { min: 4, max: 25 },
       errorMessage: 'User name must be atleast 4 characters',
     },
+    escape: true
   },
   password: {
     exists: {
@@ -103,6 +106,7 @@ export const validateUser = {
         max: 16,
       },
     },
+    escape: true
   },
   email: {
     exists: {
@@ -111,6 +115,7 @@ export const validateUser = {
     isEmail: {
       errorMessage: 'Provide an email address',
     },
+    escape: true
   },
 };
 
@@ -149,9 +154,3 @@ export const validateManufacturer = {
     escape: true,
   },
 };
-// module.exports = {
-//   validateBrandDetails,
-//   validateDrugDetails,
-//   validateUser,
-//   validateManufacturer
-// };

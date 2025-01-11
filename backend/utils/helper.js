@@ -9,7 +9,14 @@ import Manufacturers from '../models/manufacturer.js';
 import { storage } from '../models/engine/db.js';
 import Brands from '../models/brand.js';
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcrypt';
 
+
+export const hashPwd =  (password, saltRound) => {
+  const salt = bcrypt.genSaltSync(saltRound);
+  const pwdHash = bcrypt.hashSync(password, salt);
+  return pwdHash;
+}
 export const getProductCode = ({
   manufacturerId,
   brandName,
