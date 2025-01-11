@@ -13,6 +13,7 @@ import {
 import { validateUser } from '../../utils/validation.js';
 import { Router } from 'express';
 import { hashPwd } from '../../utils/helper.js';
+import { authenticated } from './manufacturer.js';
 
 const router = Router();
 
@@ -25,7 +26,7 @@ router.get('/users/', async (request, response) => {
     return response.status(500).json('Unable to fetch data');
   }
 });
-router.post('/users/', checkSchema(validateUser), async (request, response) => {
+router.post('/users/',authenticated, checkSchema(validateUser), async (request, response) => {
   try {
     const result = validationResult(request);
     if (!result.isEmpty()) {
@@ -44,7 +45,7 @@ router.post('/users/', checkSchema(validateUser), async (request, response) => {
 });
 // router.put('', async (request, response) => {});
 router.delete(
-  '/users/:id/',
+  '/users/:id/',authenticated,
   param('id').exists().withMessage('Missing user ID').escape(),
   async (request, response) => {
     // return response.status(200).json({status: 'OK'})
