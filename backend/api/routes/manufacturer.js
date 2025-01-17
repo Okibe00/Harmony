@@ -25,7 +25,7 @@ export const authenticated = (request, response, next) => {
   } else {
     response.status(401).json('Unauthenticated');
   }
-}
+};
 router.get('/manufacturers/', async (request, response) => {
   const query = 'SELECT * FROM manufacturers';
   const [row] = await storage.execute(query);
@@ -42,15 +42,16 @@ router.get('/manufacturers/:id/', async (request, response) => {
 });
 
 router.post(
-  '/manufacturers/', authenticated,
+  '/manufacturers/',
+  authenticated,
   checkSchema(validateManufacturer),
   async (request, response) => {
     const errors = validationResult(request);
 
     if (!errors.isEmpty()) {
-      console.log(errors.array())
+      console.log(errors.array());
       return response.status(400).json({
-        errors: 'BAD REQUEST'
+        errors: 'BAD REQUEST',
       });
     }
     const data = matchedData(request);
@@ -58,7 +59,7 @@ router.post(
     try {
       await storage.save(man);
     } catch (err) {
-      console.error(err)
+      console.error(err);
       return response.status(500).json({ status: 'Failed' });
     }
     return response.status(200).json({
@@ -70,7 +71,8 @@ router.post(
 //TODO: implement update route
 
 router.delete(
-  '/manufacturers/:id', authenticated,
+  '/manufacturers/:id',
+  authenticated,
   param('id').notEmpty().escape(),
   async (request, response) => {
     const err = validationResult(request);
@@ -83,9 +85,10 @@ router.delete(
     const { id } = data;
     try {
       await storage.delete(id, 'manufacturers');
+      return response.status(200).json({ status: 'Ok' });
     } catch (err) {
       console.log(err);
-      return response.status(500);
+      return response.status(500).json({ status: 'Failed' });
     }
   }
 );
