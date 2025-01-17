@@ -13,7 +13,6 @@ export default function Header() {
   const user = useContext(loginContext);
   const [btnText, setBtnText] = useState('Login');
   const navigate = useNavigate();
-  console.log(user.isLoggedIn);
   useEffect(() => {
     if (user.isLoggedIn === true) {
       setBtnText('Logout')
