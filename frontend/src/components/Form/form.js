@@ -30,6 +30,7 @@ const handleSubmit = async (event, state, endpoint, httpMethod) => {
     if (httpMethod === 'POST') {
       res = await fetch(endpoint, {
         method: httpMethod,
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -38,6 +39,7 @@ const handleSubmit = async (event, state, endpoint, httpMethod) => {
     } else {
       res = await fetch(endpoint, {
         method: httpMethod,
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -91,6 +93,13 @@ export const DeleteBrandForm = memo(function DeleteBrandForm() {
 });
 
 export const DeleteManufacturerForm = memo(function DeleteBrandForm() {
+  const [selectedMan, setSelectedMan] = useState({ id: '', name: '' });
+  const [manufacturers, setManufacturers] = useState([
+    {
+      id: '',
+      name: '',
+    },
+  ]);
   useEffect(() => {
     let body;
     const fetchData = async () => {
@@ -99,6 +108,7 @@ export const DeleteManufacturerForm = memo(function DeleteBrandForm() {
           'http://localhost:5000/api/manufacturers/',
           {
             method: 'GET',
+            credentials: 'include',
             headers: {
               'Content-Type': 'application/json',
             },
@@ -110,19 +120,14 @@ export const DeleteManufacturerForm = memo(function DeleteBrandForm() {
         }
         body = await response.json();
         setManufacturers(body);
+        setSelectedMan({ id: body[0].id, name: body[0].name });
       } catch (error) {
+        console.log(error);
         console.log('failed to fetch manufacturers');
       }
     };
     fetchData();
   }, []);
-  const [selectedMan, setSelectedMan] = useState({ id: '', name: '' });
-  const [manufacturers, setManufacturers] = useState([
-    {
-      id: '',
-      name: '',
-    },
-  ]);
   const handleChange = (e) => {
     const id = e.target.options[e.target.selectedIndex].id;
     const man = { id: id, name: e.target.value };
@@ -182,6 +187,7 @@ export const AddBrandForm = memo(function AddBrandForm() {
           'http://localhost:5000/api/manufacturers/',
           {
             method: 'GET',
+            credentials: 'include',
             headers: {
               'Content-Type': 'application/json',
             },
@@ -411,6 +417,7 @@ export const DeleteUserForm = memo(function DeleteUserForm() {
         let data;
         let response = await fetch('http://localhost:5000/api/users/', {
           method: 'GET',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -440,6 +447,7 @@ export const DeleteUserForm = memo(function DeleteUserForm() {
       `http://localhost:5000/api/users/${selectedUserId}/`,
       {
         method: 'DELETE',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
